@@ -1,37 +1,21 @@
-# About this Project
-It is a basic React todo app the does nothing except 
-- Taking Input
-- Add that to the Ram using `useState`
-- map those Todo items below the input area
-- completed status using marked checkbox
-- delete that todo
+# Todo List (React + Netlify Blobs)
 
-# Learnings from this Project
+Basic React todo app. Todos are persisted in **Netlify Blobs**.
 
-- This was my first React project 
-    (This is not  even a project, just a First Hands on `React` After alot of `Next.js` Projects). 
+## Features
+- Add / Edit / Delete / Toggle todos
+- On every change the **whole list** is written to Blobs
+- On load the list is read from Blobs
 
-- `useState` data lives **only in React’s memory (inside the component)**.   
-When you refresh the page, React reloads → memory resets → all `useState` values reset.
+## API
+- `GET  /api/todos` → returns the list
+- `POST /api/todos` → body = full array of todos → saves to Blobs
 
-So:
+Store: `todos` · Key: `list`
 
-* not in localStorage
-* not in sessionStorage
-* not in cookies
-* only in React component memory, temporary RAM.
+## Deploy
+1. Link this repo to Netlify
+2. Deploy (functions + Blobs work automatically)
+3. Use the app — todos survive refreshes
 
----
-
-## Netlify Blobs – URL seed (for future keep-alive)
-
-URLs for cold-start prevention are stored in Netlify Blobs.
-
-1. Deploy this site to Netlify (link the repo).
-2. Call the seed endpoint once:
-   ```
-   GET/POST https://YOUR-SITE.netlify.app/api/seed-urls
-   ```
-3. List is saved under store `keep-alive` → key `ping-list`.
-
-Edit the list in `netlify/functions/seed-urls.js` (`DEFAULT_URLS`) then hit the endpoint again to update.
+Local: `netlify dev` (needed for `/api/todos` + Blobs)
