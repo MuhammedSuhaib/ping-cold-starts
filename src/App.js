@@ -1,14 +1,16 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 
-const API = "/api/todos";
+// Netlify function URL — set via VITE_API_URL in .env
+const API = import.meta.env.VITE_API_URL;
 
 function App() {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(true);
-  const [editingId, setEditingId] = useState(null);
-  const [editText, setEditText] = useState("");
+  const [editingId, setEditingId] = useState(null); // id of the todo being edited
+  const [editText, setEditText] = useState("");      // draft text while editing
 
+  // Fetch todos from Netlify Blobs on first render
   useEffect(() => {
     fetch(API)
       .then((r) => r.json())
@@ -19,6 +21,7 @@ function App() {
       .finally(() => setLoading(false));
   }, []);
 
+  // Update local state + persist the full list to Netlify Blobs
   const saveTodos = useCallback(async (next) => {
     setTodos(next);
     try {
@@ -32,6 +35,7 @@ function App() {
     }
   }, []);
 
+  // Add a new todo; ignore empty input
   const addTodo = () => {
     const text = input.trim();
     if (!text) return;
@@ -39,6 +43,7 @@ function App() {
     setInput("");
   };
 
+  // Toggle completed status of a single todo
   const toggleTodo = (id) => {
     saveTodos(
       todos.map((t) =>
@@ -47,15 +52,18 @@ function App() {
     );
   };
 
+  // Remove a todo by id
   const deleteTodo = (id) => {
     saveTodos(todos.filter((t) => t.id !== id));
   };
 
+  // Enter edit mode for a todo
   const startEdit = (todo) => {
     setEditingId(todo.id);
     setEditText(todo.text);
   };
 
+  // Commit edit — delete todo if text is cleared, otherwise update
   const saveEdit = () => {
     if (!editText.trim()) {
       deleteTodo(editingId);
@@ -70,6 +78,7 @@ function App() {
     setEditText("");
   };
 
+  // Show loading state while fetching initial data
   if (loading) {
     return (
       <div className="max-w-lg mx-auto p-6 text-center">Loading todos…</div>
@@ -79,6 +88,8 @@ function App() {
   return (
     <div className="max-w-lg mx-auto p-6">
       <h1 className="text-3xl font-bold text-center mb-6">Todo List</h1>
+
+      {/* Input row */}
       <div className="flex mb-6">
         <input
           type="text"
@@ -95,18 +106,23 @@ function App() {
           Add
         </button>
       </div>
+
+      {/* Todo list */}
       <ul className="space-y-4">
         {todos.map((todo) => (
           <li
             key={todo.id}
             className="flex items-center p-4 bg-gray-200 rounded-lg shadow hover:shadow-md transition gap-2"
           >
+            {/* Completed toggle */}
             <input
               type="checkbox"
               checked={!!todo.completed}
               onChange={() => toggleTodo(todo.id)}
               className="mr-2"
             />
+
+            {/* Inline edit input or display text */}
             {editingId === todo.id ? (
               <input
                 autoFocus
@@ -127,6 +143,7 @@ function App() {
                 {todo.text}
               </span>
             )}
+
             <button
               onClick={() => startEdit(todo)}
               className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 text-sm"
