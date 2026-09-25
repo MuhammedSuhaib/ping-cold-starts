@@ -1,4 +1,4 @@
-name: Keep-alive ping
+name: ping-cold-start
 
 on:
   schedule:
