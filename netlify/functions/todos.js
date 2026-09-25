@@ -1,20 +1,17 @@
 import { getStore } from "@netlify/blobs";
 
-// Read env vars once at module load
-const STORE_NAME = process.env.BLOB_STORE_NAME;
-const LIST_KEY = process.env.BLOB_LIST_KEY;
-
-// Lazy store accessor for the "todos" blob store
-const store = () => getStore(STORE_NAME);
+// Lazy store accessor — reads store name dynamically from process.env inside request
+const store = () => getStore(process.env.BLOB_STORE_NAME);
 
 export default async (req) => {
   // Same-origin — only Content-Type needed
   const headers = { "Content-Type": "application/json" };
+  const listKey = process.env.BLOB_LIST_KEY;
 
   try {
     // Return the stored todo list
     if (req.method === "GET") {
-      const data = await store().get(LIST_KEY, { type: "json" });
+      const data = await store().get(listKey, { type: "json" });
       return new Response(JSON.stringify(data || []), { status: 200, headers });
     }
 
@@ -22,7 +19,7 @@ export default async (req) => {
     if (req.method === "POST") {
       const body = await req.json();
       const list = Array.isArray(body) ? body : []; // guard: ensure array
-      await store().setJSON(LIST_KEY, list);
+      await store().setJSON(listKey, list);
       return new Response(JSON.stringify({ ok: true, count: list.length }), {
         status: 200,
         headers,
