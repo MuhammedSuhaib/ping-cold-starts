@@ -1,0 +1,49 @@
+name: Keep-alive ping
+
+on:
+  schedule:
+    # every 12 hours (UTC)
+    - cron: "0 */12 * * *"
+  workflow_dispatch: # manual run from Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch todos + ping URLs
+        env:
+          # Repo Settings → Secrets and variables → Actions → Variables
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: |
+          set -e
+          if [ -z "$SITE_URL" ]; then
+            echo "Set repo variable SITE_URL (your Netlify site URL)"
+            exit 1
+          fi
+
+          echo "Fetching todos from $SITE_URL/.netlify/functions/todos"
+          curl -fsS "$SITE_URL/.netlify/functions/todos" -o todos.json
+
+          python3 <<'PY'
+          import json, re, urllib.request
+
+          with open("todos.json") as f:
+              data = json.load(f)
+
+          texts = []
+          for item in data if isinstance(data, list) else []:
+              t = item if isinstance(item, str) else (item or {}).get("text", "")
+              texts.append(str(t).strip())
+
+          url_re = re.compile(r"^https?://", re.I)
+          urls = [t for t in texts if url_re.match(t)]
+          print(f"Found {len(urls)} URL(s)")
+
+          for url in urls:
+              try:
+                  req = urllib.request.Request(url, method="GET")
+                  with urllib.request.urlopen(req, timeout=15) as res:
+                      print(f"OK  {res.status} {url}")
+              except Exception as e:
+                  print(f"FAIL {url} -> {e}")
+          PY
