@@ -102,7 +102,6 @@ flowchart TD
 </tr>
 </table>
 
-*Note: Vercel and Netlify edge functions are excluded as they do not exhibit traditional cold start penalties.*
 
 ---
 
