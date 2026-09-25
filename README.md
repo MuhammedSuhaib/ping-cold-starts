@@ -1,70 +1,155 @@
-# About this Project
-It is a basic React todo app the does nothing except 
-- Taking Input
-- Add that to the Ram using `useState`
-- map those Todo items below the input area
-- completed status using marked checkbox
-- delete that todo
+<div align="center">
 
-# Learnings from this Project
+<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=800&size=30&duration=3000&pause=1000&color=00FF9C&center=true&vCenter=true&width=800&lines=PING+COLD+START;ELIMINATE+SERVERLESS+LATENCY;COMMUNITY+KEEP-ALIVE+REGISTRY" alt="Typing SVG" />
 
-- This was my first React project 
-    (This is not  even a project, just a First Hands on `React` After alot of `Next.js` Projects). 
+<br>
 
-- `useState` data lives **only in React’s memory (inside the component)**.   
-When you refresh the page, React reloads → memory resets → all `useState` values reset.
+<table>
+<tr>
+<td width="50%" valign="top">
 
-So:
+### Mission
+Serverless free tiers suspend idle applications. This registry maintains active states via distributed cron execution. Zero gatekeeping. Zero fees.
 
-* not in localStorage
-* not in sessionStorage
-* not in cookies
-* only in React component memory, temporary RAM.
+</td>
+<td width="50%" valign="top">
 
-## Lazy vs Eager Store Initialization
+### Telemetry
+![Uptime](https://img.shields.io/badge/Uptime-99.9%25-00FF9C?style=flat-square)
+![Ping Interval](https://img.shields.io/badge/Interval-12H-00FF9C?style=flat-square)
+![Registry Size](https://img.shields.io/badge/Nodes-Dynamic-00FF9C?style=flat-square)
 
-When working with Netlify Blobs, the store must be initialized **lazily** — only when the function actually runs — because the Netlify Blobs context isn't available at module import time.
+</td>
+</tr>
+</table>
 
-```js
-// ❌ Eager — store created immediately when the file is imported
-//    Blobs context may not be ready yet → can throw an error
-const store = getStore("todos");
+</div>
 
-// ✅ Lazy — store created only when store() is actually called
-//    By then, the function is running and the context is ready
-const store = () => getStore("todos");
+---
+
+<div align="center">
+
+### Infrastructure Matrix
+
+| Domain | Stack |
+| :--- | :--- |
+| **Interface** | React, Tailwind CSS |
+| **Edge Compute** | Netlify Functions |
+| **State Management** | Netlify Blobs |
+| **Orchestration** | GitHub Actions Cron |
+
+</div>
+
+---
+
+### System Topology
+
+```mermaid
+%%{init: {'theme': 'dark'}}%%
+flowchart TD
+    subgraph Client [User Interface]
+        UI[React Dashboard]
+    end
+
+    subgraph Edge [Netlify Edge Network]
+        API[Serverless Functions]
+        DB[(Blob Storage)]
+    end
+
+    subgraph Automation [GitHub Actions]
+        Cron[Cron Scheduler]
+    end
+
+    subgraph Targets [Free Tier Endpoints]
+        HF[Hugging Face Spaces]
+        ST[Streamlit Cloud]
+        RD[Render Instances]
+        KY[Koyeb Containers]
+    end
+
+    UI -- HTTP POST --> API
+    API -- Write State --> DB
+    Cron -- Read Registry --> DB
+    Cron -- HTTP GET Keep-Alive --> Targets
 ```
 
-Wrapping `getStore` inside `() =>` defers execution until `store()` is called inside the request handler, making it safe in a serverless environment.
+---
 
-## 🧠 Mental Model — How Data is Stored in Netlify Blobs
+### Supported Targets
 
-Think of Netlify Blobs like a **filing cabinet**:
+<table>
+<tr>
+<td align="center" width="25%">
+<b>Hugging Face</b><br>
+<img src="https://img.shields.io/badge/HuggingFace-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black"/>
+<br><sub>CPU/GPU Sleep: 48h</sub>
+</td>
+<td align="center" width="25%">
+<b>Streamlit</b><br>
+<img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white"/>
+<br><sub>Inactivity Sleep: 7d</sub>
+</td>
+<td align="center" width="25%">
+<b>Render</b><br>
+<img src="https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=black"/>
+<br><sub>Spin Down: 15m</sub>
+</td>
+<td align="center" width="25%">
+<b>Koyeb</b><br>
+<img src="https://img.shields.io/badge/Koyeb-121212?style=for-the-badge&logo=koyeb&logoColor=white"/>
+<br><sub>Free Tier Scaling</sub>
+</td>
+</tr>
+</table>
 
+*Note: Vercel and Netlify edge functions are excluded as they do not exhibit traditional cold start penalties.*
+
+---
+
+### Deployment & Execution
+
+**Prerequisites**
+- Node.js (v18+)
+- `pnpm` package manager
+
+**Initialization**
+```bash
+git clone https://github.com/your-username/ping-cold-start.git
+cd ping-cold-start
+pnpm install
 ```
-Filing Cabinet  →  Store  (BLOB_STORE_NAME = "todos")
-    Drawer      →  Key    (BLOB_LIST_KEY   = "list")
-    Paper       →  Value  (the actual JSON array of todos)
+
+**Local Execution**
+```bash
+pnpm start
 ```
 
-| Concept | Blob term | Our value | What it is |
-|---|---|---|---|
-| Filing cabinet | **Store** | `"todos"` | A named bucket that groups related data |
-| Drawer label | **Key** | `"list"` | The address of a specific piece of data inside the store |
-| Paper inside | **Value** | `[{id, text, completed}, ...]` | The actual data blob stored at that key |
+---
 
-### In code
+### Environment Configuration
 
-```js
-// Open the filing cabinet called "todos"
-const store = () => getStore("todos");
-
-// Read the paper in the drawer labelled "list"
-store().get("list", { type: "json" });
-
-// Replace the paper in the drawer labelled "list"
-store().setJSON("list", updatedArray);
+**Local Variables** `.env`
+```env
+REACT_APP_API_URL=/.netlify/functions/todos
+BLOB_STORE_NAME=<your_store_name>
+BLOB_LIST_KEY=<your_list_key>
 ```
 
-> **Why one key?** The entire todo list is stored as a single JSON array under the key `"list"`.
-> There is no row-per-todo — every save overwrites the whole array.
+**Repository Secrets** GitHub Actions
+| Variable | Description | Example |
+| :--- | :--- | :--- |
+| `SITE_URL` | Base URL of the deployed registry | `https://ping-cold-start.netlify.app` |
+
+---
+
+<div align="center">
+
+### Documentation & Resources
+
+[Development Learnings](./LEARNINGS.md)
+
+<br>
+
+<sub>Built by programmers, for programmers. 🐱‍💻</sub>
+
+</div>
