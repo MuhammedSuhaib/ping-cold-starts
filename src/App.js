@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 
-// Netlify function URL — set via VITE_API_URL in .env
-const API = import.meta.env.VITE_API_URL;
+// Netlify function URL — set via REACT_APP_API_URL in .env
+const API = process.env.REACT_APP_API_URL;
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -13,11 +13,18 @@ function App() {
   // Fetch todos from Netlify Blobs on first render
   useEffect(() => {
     fetch(API)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const contentType = r.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Response is not JSON (Netlify CLI not running locally)");
+        }
+        return r.json();
+      })
       .then((data) => {
         if (Array.isArray(data)) setTodos(data);
       })
-      .catch(console.error)
+      .catch((err) => console.warn("Could not load stored todos:", err.message))
       .finally(() => setLoading(false));
   }, []);
 
