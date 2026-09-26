@@ -1,6 +1,12 @@
 <div align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://see.fontimg.com/api/rf5/dE0g/NmU5ZTRmNmJkZGFkNDMzNjg3YWFmMjk2NjUzMGY4YTEudHRm/UGluZyBDb2xkIFN0YXJ0/beautiful-people-personal-use.png?r=fs&h=65&w=1000&fg=FFFFFF&bg=00000000&tb=1&s=65">
+  <img src="https://see.fontimg.com/api/rf5/dE0g/NmU5ZTRmNmJkZGFkNDMzNjg3YWFmMjk2NjUzMGY4YTEudHRm/UGluZyBDb2xkIFN0YXJ0/beautiful-people-personal-use.png?r=fs&h=65&w=1000&fg=000000&bg=FFFFFF&tb=1&s=65" alt="Ping Cold Start">
+</picture>🥶🥶🥶
 
-<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=800&size=30&duration=3000&pause=1000&color=00FF9C&center=true&vCenter=true&width=800&lines=PING+COLD+START;ELIMINATE+SERVERLESS+LATENCY;COMMUNITY+KEEP-ALIVE+REGISTRY" alt="Typing SVG" />
+
+    
+<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=800&size=30&duration=3000&pause=1000&color=00FF9C&center=true&vCenter=true&width=800&lines=ELIMINATE+SERVERLESS+LATENCY;COMMUNITY+KEEP-ALIVE+REGISTRY" alt="Typing SVG" />
 
 <br>
 
