@@ -88,84 +88,147 @@ function App() {
   // Show loading state while fetching initial data
   if (loading) {
     return (
-      <div className="max-w-lg mx-auto p-6 text-center">Loading todos…</div>
+      <div className="max-w-lg mx-auto p-6 text-center">Loading cold-start registry...</div>
     );
   }
 
   return (
-    <div className="max-w-lg mx-auto p-6">
-      <h1 className="text-3xl font-bold text-center mb-6">Todo List</h1>
+    <div className="max-w-xl mx-auto p-6 space-y-6">
+      {/* Header */}
+      <header className="text-center space-y-1.5 mb-6">
+        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
+          🥶 Ping Cold Start
+        </h1>
+        <p className="text-gray-500 text-sm font-normal">
+          Prevent serverless apps from sleeping by registering their URLs for automated pings.
+        </p>
+      </header>
 
-      {/* Input row */}
-      <div className="flex mb-6">
+      {/* Input Card */}
+      <div className="bg-slate-800 border border-slate-700 rounded-xl p-3 shadow-xl">
+      <div className="flex gap-2">
         <input
-          type="text"
+          type="url"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyPress={(e) => e.key === "Enter" && addTodo()}
-          placeholder="Add a URL or todo"
-          className="flex-1 px-4 py-2 border rounded-l-lg focus:outline-none"
+          onKeyDown={(e) => e.key === "Enter" && addTodo()}
+          placeholder="Enter endpoint URL (e.g. https://my-app.hf.space)"
+          className="flex-1 bg-slate-900 border border-slate-700 text-slate-100 px-4 py-2.5 rounded-lg "
         />
         <button
           onClick={addTodo}
-          className="px-6 py-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600 transition"
+          className="text-slate-950 font-semibold px-6 py-2.5 rounded-lg transition text-sm flex items-center gap-1 shrink-0"
         >
           Add
         </button>
       </div>
+    </div>
 
-      {/* Todo list */}
-      <ul className="space-y-4">
-        {todos.map((todo) => (
-          <li
-            key={todo.id}
-            className="flex items-center p-4 bg-gray-200 rounded-lg shadow hover:shadow-md transition gap-2"
-          >
-            {/* Completed toggle */}
-            <input
-              type="checkbox"
-              checked={!!todo.completed}
-              onChange={() => toggleTodo(todo.id)}
-              className="mr-2"
-            />
+      {/* Endpoints List */}
+      <div className="space-y-3">
+        <div className="flex justify-between items-center text-xs text-slate-400 px-1 font-medium">
+          <span>Registered Endpoints ({todos.length})</span>
+          <span>Double-click text to edit</span>
+        </div>
 
-            {/* Inline edit input or display text */}
-            {editingId === todo.id ? (
-              <input
-                autoFocus
-                value={editText}
-                onChange={(e) => setEditText(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && saveEdit()}
-                onBlur={saveEdit}
-                className="flex-1 px-2 py-1 border rounded"
-              />
-            ) : (
-              <span
-                onDoubleClick={() => startEdit(todo)}
-                className={`${
-                  todo.completed ? "line-through text-gray-500" : ""
-                } flex-1 cursor-pointer`}
-                title="Double-click to edit"
-              >
-                {todo.text}
-              </span>
-            )}
+        {todos.length === 0 ? (
+          <div className="rounded-xl p-8 text-center text-slate-500 text-sm">
+            No endpoints added yet. Paste your app URL above!
+          </div>
+        ) : (
+          <ul className="space-y-2.5">
+            {todos.map((todo) => {
+              const isUrl = /^https?:\/\//i.test(todo.text);
+              return (
+                <li
+                  key={todo.id}
+                  className={`flex items-center p-3.5 bg-slate-800 border ${
+                    todo.completed
+                      ? "border-slate-800/80 opacity-60"
+                      : "border-slate-700/80"
+                  } rounded-xl shadow-sm hover:border-slate-600 transition gap-3`}
+                >
+                  {/* Active/Pause toggle */}
+                  <input
+                    type="checkbox"
+                    checked={!!todo.completed}
+                    onChange={() => toggleTodo(todo.id)}
+                    className="w-4 h-4 rounded border-slate-700 text-emerald-500 focus:ring-emerald-500 focus:ring-offset-slate-900 bg-slate-900 cursor-pointer"
+                  />
 
-            <button
-              onClick={() => startEdit(todo)}
-              className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 text-sm"
-            >
-              Edit
-            </button>
-            <button
-              onClick={() => deleteTodo(todo.id)}
-              className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm"
-            >
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
+                  {/* Content */}
+                  {editingId === todo.id ? (
+                    <input
+                      autoFocus
+                      value={editText}
+                      onChange={(e) => setEditText(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && saveEdit()}
+                      onBlur={saveEdit}
+                      className="flex-1 px-3 py-1 border rounded text-sm"
+                    />
+                  ) : (
+                    <div className="flex-1 min-w-0 flex items-center gap-2">
+                      <span
+                        onDoubleClick={() => startEdit(todo)}
+                        className={`${
+                          todo.completed
+                            ? "line-through text-slate-500"
+                            : "text-slate-200"
+                        } truncate text-sm cursor-pointer`}
+                        title="Double-click to edit"
+                      >
+                        {todo.text}
+                      </span>
+                      {isUrl && (
+                        <a
+                          href={todo.text}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="shrink-0 text-[10px] bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20 px-2 py-0.5 rounded font-mono transition flex items-center gap-1"
+                          title="Open URL in new tab"
+                        >
+                          <span>URL</span>
+                          <svg
+                            className="w-2.5 h-2.5 opacity-70"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
+                        </a>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      onClick={() => startEdit(todo)}
+                      className="text-slate-400 hover:text-amber-400 p-1.5 rounded hover:bg-slate-700/50 transition text-xs font-medium"
+                      title="Edit"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => deleteTodo(todo.id)}
+                      className="text-slate-400 hover:text-rose-400 p-1.5 rounded hover:bg-slate-700/50 transition text-xs font-medium"
+                      title="Delete"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }
