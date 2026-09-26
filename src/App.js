@@ -97,7 +97,7 @@ function App() {
       {/* Header */}
       <header className="text-center space-y-1.5 mb-6">
         <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
-          🥶 Ping Cold Start
+           🥶<a href="https://www.fontspace.com/category/lettering"><img src="https://see.fontimg.com/api/rf5/dE0g/NmU5ZTRmNmJkZGFkNDMzNjg3YWFmMjk2NjUzMGY4YTEudHRm/UGluZyBDb2xkIFN0YXJ0/beautiful-people-personal-use.png?r=fs&h=65&w=1000&fg=000000&bg=FFFFFF&tb=1&s=65" alt="Lettering fonts"/></a>
         </h1>
         <p className="text-gray-500 text-sm font-normal">
           Prevent serverless apps from sleeping by registering their URLs for automated pings.
