@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/ping-cold-starts/static/js/main.61a0d79a.js",
+    "index.html": "/ping-cold-starts/index.html",
+    "main.61a0d79a.js.map": "/ping-cold-starts/static/js/main.61a0d79a.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.61a0d79a.js"
+  ]
+}
